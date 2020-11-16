@@ -74,7 +74,7 @@ class InputData(object):
             file_name = scenario_info["id"] + "_" + field_name + "." + ext
 
         try:
-            data = _read_data(file_name)
+            data = _read_data(file_name, from_dir)
             return data
         except FileNotFoundError:
             print(
@@ -90,7 +90,23 @@ class InputData(object):
             raise
 
 
-def _read_data(file_name):
+def _read_data(file_name, dirname=None):
+    """Reads data from a list of possible locations.
+
+    :param str file_name: file name
+    :param str dirname: location to check
+    :return: (*pandas.DataFrame*) -- specified file as a data frame.
+    """
+    dirs = [server_setup.LOCAL_DIR]
+    if dirname is not None:
+        dirs.append(dirname)
+    for d in dirs:
+        file = os.path.join(d, file_name)
+        if os.path.isfile(file):
+            return _read_data_from(file)
+
+
+def _read_data_from(filepath):
     """Reads data.
 
     :param str file_name: file name, extension either 'pkl', 'csv', or 'mat'.
@@ -100,7 +116,6 @@ def _read_data(file_name):
     :raises ValueError: if extension is unknown.
     """
     ext = file_name.split(".")[-1]
-    filepath = os.path.join(server_setup.LOCAL_DIR, file_name)
     if ext == "pkl":
         data = pd.read_pickle(filepath)
     elif ext == "csv":

@@ -1,3 +1,6 @@
+import os
+import shlex
+import subprocess
 from pathlib import Path
 
 import pandas as pd
@@ -22,6 +25,11 @@ class CsvStore:
 
         :return: (*pandas.DataFrame*) -- the specified table as a data frame.
         """
+
+        # Read from mounted location if possible
+        if os.path.isfile(path_on_server):
+            return self._parse_csv(path_on_server)
+
         local_path = Path(server_setup.LOCAL_DIR, filename)
 
         try:
@@ -56,7 +64,12 @@ class CsvStore:
         :raises IOError: if command is not successfully executed.
         :return: (*str*) -- standard output stream.
         """
-        stdin, stdout, stderr = self.data_access.execute_command(command)
+        if self.ssh_client is None:
+            args = shlex.split(command)
+            proc = subprocess.Popen(args)
+            stdout, stderr = proc.stdout.readlines(), proc.stderr.readlines()
+        else:
+            _, stdout, stderr = self.data_access.execute_command(command)
         if len(stderr.readlines()) != 0:
             raise IOError(err_message)
         return stdout

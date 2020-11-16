@@ -12,6 +12,11 @@ INPUT_DIR = posixpath.join(DATA_ROOT_DIR, "data/input")
 OUTPUT_DIR = posixpath.join(DATA_ROOT_DIR, "data/output")
 LOCAL_DIR = os.path.join(str(Path.home()), "ScenarioData", "")
 MODEL_DIR = "/home/bes/pcm"
+REISEJL_HOST = "reisejl"
+
+
+def is_container_arch():
+    return os.path.exists(DATA_ROOT_DIR)
 
 
 def get_server_user():

@@ -1,5 +1,6 @@
 import os
 import pickle
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -69,14 +70,16 @@ class OutputData(object):
 
 
 def _read_data(file_name):
-    """Reads data.
+    """Reads data from a list of possible locations.
 
     :param str file_name: file name
     :return: (*pandas.DataFrame*) -- specified file as a data frame.
     """
-    data = pd.read_pickle(os.path.join(server_setup.LOCAL_DIR, file_name))
-
-    return data
+    dirs = [server_setup.OUTPUT_DIR, server_setup.LOCAL_DIR]
+    for d in dirs:
+        file = os.path.join(d, file_name)
+        if os.path.isfile(file):
+            return pd.read_pickle(file)
 
 
 def _check_field(field_name):

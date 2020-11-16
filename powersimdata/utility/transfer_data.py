@@ -1,6 +1,7 @@
 import glob
 import os
 import posixpath
+import shutil
 from subprocess import Popen
 
 import paramiko

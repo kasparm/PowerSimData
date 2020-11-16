@@ -4,6 +4,7 @@ import posixpath
 from collections import OrderedDict
 
 import numpy as np
+import requests
 from scipy.io import savemat
 
 from powersimdata.input.grid import Grid
@@ -79,6 +80,14 @@ class Execute(State):
         scenario = scenario_table[scenario_table.id == scenario_id]
         self._scenario_info = scenario.to_dict("records", into=OrderedDict)[0]
 
+    def _call_http(self, extra_args):
+        url = f"http://{server_setup.REISEJL_HOST}:5000/call"
+        data = {"scenario_id": self._scenario_info["id"]}
+        resp = requests.post(url, json=data)
+        if resp.status_code == 200:
+            return True
+        raise Exception(f"Failed to launch simulation: status={resp.status_code}")
+
     def _run_script(self, script, extra_args=None):
         """Returns running process
 
@@ -131,6 +140,7 @@ class Execute(State):
         self._update_scenario_status()
         print(self._scenario_status)
 
+    # TODO: handle uploads, using server_setup.is_container_arch() where needed
     def prepare_simulation_input(self, profiles_as=None):
         """Prepares scenario for execution
 
@@ -193,7 +203,11 @@ class Execute(State):
         if extract_data:
             extra_args.append("--extract-data")
 
-        return self._run_script("call.py", extra_args=extra_args)
+        # TODO: eventually remove the script, call http over vpn
+        if server_setup.is_container_arch():
+            return self._call_http(extra_args)
+        else:
+            return self._run_script(extra_args)
 
     def extract_simulation_output(self):
         """Extracts simulation outputs {PG, PF, LMP, CONGU, CONGL} on server.
