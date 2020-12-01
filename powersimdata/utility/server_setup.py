@@ -2,7 +2,12 @@ import os
 import posixpath
 from pathlib import Path
 
-SERVER_ADDRESS = "becompute01.gatesventures.com"
+server_address = os.getenv("BE_SERVER_ADDRESS")
+if server_address is not None:
+    SERVER_ADDRESS = server_address
+else:
+    SERVER_ADDRESS = "becompute01.gatesventures.com"
+
 BACKUP_DATA_ROOT_DIR = "/mnt/RE-Storage/v2"
 DATA_ROOT_DIR = "/mnt/bes/pcm"
 EXECUTE_DIR = "tmp"
