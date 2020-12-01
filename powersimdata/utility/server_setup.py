@@ -8,6 +8,12 @@ if server_address is not None:
 else:
     SERVER_ADDRESS = "becompute01.gatesventures.com"
 
+server_port = os.getenv("BE_SERVER_SSH_PORT")
+if server_address is not None:
+    SERVER_SSH_PORT = server_port
+else:
+    SERVER_SSH_PORT = 22
+
 BACKUP_DATA_ROOT_DIR = "/mnt/RE-Storage/v2"
 DATA_ROOT_DIR = "/mnt/bes/pcm"
 EXECUTE_DIR = "tmp"
