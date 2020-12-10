@@ -7,19 +7,18 @@ from powersimdata.input.input_data import InputData
 from powersimdata.input.transform_grid import TransformGrid
 from powersimdata.input.transform_profile import TransformProfile
 
-interconnect = ["Western"]
+interconnect = ["Texas"]
 param = {
-    "Western": {
-        "demand": "v4",
+    "Texas": {
+        "demand": "ercot",
         "hydro": "v2",
         "solar": "v4.1",
-        "wind": "v5.2",
-        "n_zone_to_scale": 6,
-        "n_plant_to_scale": 50,
-        "n_plant_to_add": 100,
+        "wind": "v5.1",
+        "n_zone_to_scale": 3,
+        "n_plant_to_scale": 20,
+        "n_plant_to_add": 30,
     }
 }
-
 
 def get_zone_with_resource(base_grid, resource):
     zone = list(
