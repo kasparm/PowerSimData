@@ -54,7 +54,15 @@ class CsvStore:
         :raises IOError: if command is not successfully executed.
         :return: (*str*) -- standard output stream.
         """
+        print(command)
         stdin, stdout, stderr = self.data_access.execute_command(command)
-        if len(stderr.readlines()) != 0:
-            raise IOError(err_message)
-        return stdout
+        output = stdout.readlines()
+        error = stderr.readlines()
+
+        # print(input)
+        print(output)
+        print(error)
+
+        if len(error) != 0:
+            raise IOError(err_message + str(stdout.readlines()) + str(stderr.readlines()))
+        return output
