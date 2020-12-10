@@ -32,7 +32,7 @@ def get_connection():
 
     :return: (*str*) -- connection string for postgres db
     """
-    return "dbname=psd host=localhost user=postgres password=example"
+    return "dbname=psd host=scenario_db user=postgres password=example"
 
 
 def get_cursor_factory():
